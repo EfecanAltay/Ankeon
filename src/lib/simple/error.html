@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hata Mesajı</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .error-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            padding: 20px;
+        }
+
+        .error-box {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .error-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ff4d4d;
+            margin-bottom: 10px;
+        }
+
+        .error-message {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .error-details {
+            font-size: 14px;
+            color: #888;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+        }
+
+        .button-container {
+            text-align: center;
+        }
+
+        .retry-button {
+            background-color: #ff4d4d;
+            color: white;
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .retry-button:hover {
+            background-color: #e60000;
+        }
+    </style>
+</head>
+<body>
+
+<div class="error-container">
+    <div class="error-box">
+        <div class="error-title">Critical Error</div>
+        <div class="error-message">The source map for TypeScript could not be loaded. This may be due to a missing file or an incorrect path.</div>
+        <div class="error-details">
+            <strong>Error Details:</strong><br>
+            <code>ENOENT: no such file or directory, open 'd:/Dev/Ankeon/node_modules/typescript/lib/typescript.js.map'</code>
+        </div>
+        <div class="button-container">
+            <button class="retry-button" onclick="window.location.reload();">Try Again</button>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

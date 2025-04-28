@@ -3,25 +3,33 @@ import { FileOperationModule } from "./fileOperationModule";
 import { PointerContentModule } from "./pointerContentModule";
 import { BindableObjectModule } from "./bindableObjectModule";
 import * as path from 'path';
+import { ErrorHandlingModule } from "./errorHandlingModule";
 
 export class HTMLEngine {
 
     private _fileOperationModule: FileOperationModule = new FileOperationModule();
     private _pointerContentModule: PointerContentModule = new PointerContentModule();
     private _bindableObjectModule: BindableObjectModule = new BindableObjectModule();
+    private _errorHandlingModule : ErrorHandlingModule = new ErrorHandlingModule(this._fileOperationModule);
+
 
     public RenderHTML<T>(htmlPath: string, modelObj: T): string {
+        try {
 
-        // Reading HTML file
-        const readingContent = this._fileOperationModule.ReadFile(path.join(__dirname,htmlPath));
+            // Reading HTML file
+            const readingContent = this._fileOperationModule.ReadFile(path.join(__dirname,htmlPath));
 
-        // Detecting the HTML content
-        const pointeredContent = this._pointerContentModule.PointerContent(readingContent);
+            // Detecting the HTML content
+            const pointeredContent = this._pointerContentModule.PointerContent(readingContent);
 
-        // Detecting the HTML content
-        const resultContent = this._bindableObjectModule.RenderContent(pointeredContent, modelObj);
-
-        return resultContent;
+            // Detecting the HTML content
+            const resultContent = this._bindableObjectModule.RenderContent(pointeredContent, modelObj);
+                
+            return resultContent;
+        }
+        catch (error) {
+            return  this._errorHandlingModule.HandleError(error);
+        }
     }
 
     public TemplateRefMap: Map<string, HTMLTemlateInfo> = new Map<string, HTMLTemlateInfo>();
