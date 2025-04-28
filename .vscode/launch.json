@@ -1,0 +1,41 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Launch Ankeon",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "runtimeExecutable": "npm",
+            "runtimeArgs": [
+                "run",
+                "dev",
+            ],
+            "program": "${workspaceFolder}\\src\\app\\app.ts",
+            "outFiles": [
+                "${workspaceFolder}/**/*.js"
+            ],
+            "sourceMaps": false
+        },
+        {
+            "type": "node",
+            "request": "attach",
+            "name": "Attach to Ankeon",
+            "port": 9229,
+            "restart": true,
+            "skipFiles": ["<node_internals>/**"],
+            "sourceMaps": true
+        }
+    ],
+    "compounds": [
+        {
+          "name": "Debug Ankeon",
+          "configurations": ["Launch Ankeon", "Attach to Ankeon"]
+        }
+      ]
+}
