@@ -44,7 +44,6 @@ export class AnkeonServer {
         const contentType = mimeTypes[extname];
 
         if (contentType) {
-            console.log(fullPath);
             fs.readFile(fullPath, (error, content) => {
                 if (error) {
                     if (error.code === 'ENOENT') {

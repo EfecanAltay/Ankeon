@@ -1,83 +1,458 @@
+
 <!DOCTYPE html>
+
 <html lang="en">
 
+
+
 <head>
+
     <meta charset="UTF-8">
-    <title>ANKEON</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Hata Mesajı</title>
+
+
+
+    <!-- Highlight.js Tema -->
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
+
+
+
+    <!-- Satır Numaraları için Ek CSS -->
+
+    <link rel="stylesheet"
+
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlightjs-line-numbers.js/2.8.0/styles/line-numbers.min.css">
+
+
+
+    <!-- Highlight.js Kütüphanesi -->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+
+
+
+    <!-- Satır Numaraları JS -->
+
+    <script
+
+        src="https://cdnjs.cloudflare.com/ajax/libs/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
+
+
+
     <style>
+
         body {
+
             font-family: Arial, sans-serif;
+
             background-color: #f4f4f4;
+
             margin: 0;
+
             padding: 0;
+
         }
+
+
+
+        .error-container {
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            height: 100vh;
+
+            padding: 20px;
+
+        }
+
+
 
         .error-box {
+
             background-color: #fff;
+
             border: 1px solid #ddd;
+
             border-radius: 8px;
-            padding: 30px;
-            max-width: 700px;
-            margin: auto;
+
+            padding: 20px;
+
+            max-width: 600px;
+
+            width: 100%;
+
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
         }
 
+
+
         .error-title {
-            font-size: 28px;
+
+            font-size: 24px;
+
             font-weight: bold;
+
             color: #ff4d4d;
-            margin-bottom: 15px;
-            text-align: center;
+
+            margin-bottom: 10px;
+
         }
+
 
 
         .error-message {
+
             font-size: 16px;
+
             color: #333;
+
             margin-bottom: 20px;
+
         }
+
+
 
         .error-details {
+
+            display: none;
+
+            /* Initially hidden */
+
             font-size: 14px;
+
             color: #888;
+
             padding: 10px;
+
             background-color: #f9f9f9;
+
             border-radius: 4px;
+
         }
+
+
+
+        .button-container {
+
+            text-align: center;
+
+        }
+
+
 
         .retry-button {
+
             background-color: #ff4d4d;
+
             color: white;
+
             padding: 10px 20px;
+
             font-size: 16px;
+
             border: none;
-            border-radius: 5px;
-            margin-top: 20px;
-            display: block;
-            margin-left: auto;
-            margin-right: auto;
-            transition: background-color 0.3s;
+
+            border-radius: 4px;
+
+            cursor: pointer;
+
+            transition: background-color 0.3s ease;
+
         }
+
+
 
         .retry-button:hover {
+
             background-color: #e60000;
+
         }
+
+
+
+        .show-hide-button {
+
+            background-color: #f9f9f9;
+
+            color: #888;
+
+            padding: 10px 20px;
+
+            font-size: 16px;
+
+            border: none;
+
+            border-radius: 4px;
+
+            cursor: pointer;
+
+            transition: background-color 0.3s ease;
+
+        }
+
+
+
+        .show-hide-button:hover {
+
+            background-color: #f9f9f9;
+
+        }
+
+
+
+        /* Satır numarası ile eşleştirilemediğinden dolayı özel vurgulama yapılmaz.
+
+        Ancak dilersen kendi stilinle çalışabilirsin: */
+
+        .hljs .error-line {
+
+            background-color: #ffe6e6;
+
+            border-left: 4px solid red;
+
+            display: block;
+
+        }
+
+
+
+        .hljs-ln-line.highlight {
+
+            background-color: #ffe6e6 !important;
+
+            border-left: 4px solid red;
+
+        }
+
+        .hljs-ln-numbers {
+
+            color: #888;
+
+            padding-right: 10px;
+
+        }
+
+
+
+        .hljs-ln-numbers span {
+
+            display: inline-block;
+
+            width: 30px;
+
+        }
+
+
+
+        .column-error {
+
+            border-bottom: 2px solid red;
+
+            color: red;
+
+            background-color: black;
+
+            font-weight: bold;
+
+        }
+
     </style>
+
+    <script>
+
+        document.addEventListener('DOMContentLoaded', (event) => {
+
+            hljs.highlightAll();
+
+            hljs.initLineNumbersOnLoad();
+
+            setTimeout(() => {
+
+ 
+
+                const targetLine = 4;      // 4. satır
+
+                const startCol = 24;       // 20. sütundan başla
+
+                const endCol = 39;         // 30. sütunda bitir
+
+
+
+                const lines = document.querySelectorAll('.hljs-ln-line.hljs-ln-code');
+
+                if (lines[targetLine - 1]) {
+
+                lines[targetLine - 1].classList.add('highlight');
+
+                }
+
+
+
+                const target = lines[targetLine - 1];
+
+                if (target) {
+
+                    const text = target.innerText;
+
+                    const before = text.slice(0, startCol);
+
+                    const error = text.slice(startCol, endCol);
+
+                    const after = text.slice(endCol);
+
+
+
+                    target.innerHTML = `${before}<span class="column-error">${error}</span>${after}`;
+
+                }
+
+            }, 500);
+
+        });
+
+
+
+        function toggleDetails() {
+
+            const details = document.querySelector('.error-details');
+
+            const tglBtn = document.querySelector('.show-hide-button');
+
+            if (details.style.display === 'none') {
+
+                details.style.display = 'block';
+
+                tglBtn.innerHTML = 'Hide';
+
+            } else {
+
+                details.style.display = 'none';
+
+                tglBtn.innerHTML = 'Show Detail';
+
+            }
+
+        }
+
+    </script>
+
+    <style>
+
+        .code-section code .error-line {
+
+            background-color: #ffe6e6;
+
+            border-left: 4px solid red;
+
+            display: block;
+
+            padding-left: 10px;
+
+            width: 230px;
+
+        }
+
+        .errorLine {
+
+            background-color: #ffe6e6;
+
+            border-left: 4px solid red;
+
+            display: block;
+
+            padding-left: 10px;
+
+            width: 230px;
+
+        }
+
+    </style>
+
 </head>
 
+
+
 <body>
-    <div class="container mt-5">
-      
-        <!-- Hata Kutusu -->
-        <div class="error-box mt-5">
-            <img src="assets/logo.png" alt="Logo" class="img-fluid mx-auto d-block mb-4" style="max-width: 200px;">
-            <p class="error-title">Welcome to the ANKEON Framework!</p>
+
+
+
+    <div class="error-container">
+
+        <div class="error-box">
+
+            <div class="error-title">Bindable Property Error</div>
+
+            <div class="error-message">Variable Desc2 is not found in the model object</div>
+
+            <div class="error-message">73</div>
+
+            <div class="code-section" style="margin-top: 20px;">
+
+                <strong>Hatalı Kod:</strong>
+
+                <pre >
+
+                    <code data-ln-start-from="10" class="language-javascript line-numbers">
+
+                    // Toplama fonksiyonu
+
+                    function sum(a, b) {
+
+                        return a + b;
+
+                        console.log("Bu satıra ulaşılmaz"); // Hatalı satır
+
+                    }
+
+                    </code>
+
+                </pre>
+
+            </div>
+
+            <div class="error-details" style="display: none;">
+
+                <strong>Error Details:</strong><br>
+
+                <code>Error: Variable Desc2 is not found in the model object
+    at BindableObjectModule.bindToTemplate (D:\Dev\Ankeon\src\lib\core\bindableObjectModule.ts:96:35)
+    at BindableObjectModule.getHTMLMergedViewModel (D:\Dev\Ankeon\src\lib\core\bindableObjectModule.ts:45:18)
+    at BindableObjectModule.RenderContent (D:\Dev\Ankeon\src\lib\core\bindableObjectModule.ts:14:28)
+    at HTMLEngine.RenderHTML (D:\Dev\Ankeon\src\lib\core\htmlEngine.ts:29:62)
+    at AnkeonServer.onRequest (D:\Dev\Ankeon\src\lib\core\ankeonServer.ts:65:42)
+    at Server.<anonymous> (D:\Dev\Ankeon\src\lib\core\ankeonServer.ts:17:61)
+    at Server.emit (node:events:518:28)
+    at Server.emit (node:domain:489:12)
+    at parserOnIncoming (node:_http_server:1153:12)
+    at HTTPParser.parserOnHeadersComplete (node:_http_common:117:17)</code>
+
+            </div>
+
+            <div class="button-container">
+
+                <button class="show-hide-button" onclick="toggleDetails();">Show Detail</button>
+
+                <button class="retry-button" onclick="window.location.reload();">Try Again</button>
+
+            </div>
 
         </div>
+
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
 </body>
+
+
 
 </html>

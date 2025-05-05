@@ -1,9 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hata Mesajı</title>
+
+    <!-- Highlight.js Tema -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
+
+    <!-- Satır Numaraları için Ek CSS -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlightjs-line-numbers.js/2.8.0/styles/line-numbers.min.css">
+
+    <!-- Highlight.js Kütüphanesi -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+
+    <!-- Satır Numaraları JS -->
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
+
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -44,6 +60,8 @@
         }
 
         .error-details {
+            display: none;
+            /* Initially hidden */
             font-size: 14px;
             color: #888;
             padding: 10px;
@@ -69,23 +87,138 @@
         .retry-button:hover {
             background-color: #e60000;
         }
+
+        .show-hide-button {
+            background-color: #f9f9f9;
+            color: #888;
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .show-hide-button:hover {
+            background-color: #f9f9f9;
+        }
+
+        /* Satır numarası ile eşleştirilemediğinden dolayı özel vurgulama yapılmaz.
+        Ancak dilersen kendi stilinle çalışabilirsin: */
+        .hljs .error-line {
+            background-color: #ffe6e6;
+            border-left: 4px solid red;
+            display: block;
+        }
+
+        .hljs-ln-line.highlight {
+            background-color: #ffe6e6 !important;
+            border-left: 4px solid red;
+        }
+        .hljs-ln-numbers {
+            color: #888;
+            padding-right: 10px;
+        }
+
+        .hljs-ln-numbers span {
+            display: inline-block;
+            width: 30px;
+        }
+
+        .column-error {
+            border-bottom: 2px solid red;
+            color: red;
+            background-color: black;
+            font-weight: bold;
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            hljs.highlightAll();
+            hljs.initLineNumbersOnLoad();
+            setTimeout(() => {
+ 
+                const targetLine = 4;      // 4. satır
+                const startCol = 24;       // 20. sütundan başla
+                const endCol = 39;         // 30. sütunda bitir
+
+                const lines = document.querySelectorAll('.hljs-ln-line.hljs-ln-code');
+                if (lines[targetLine - 1]) {
+                lines[targetLine - 1].classList.add('highlight');
+                }
+
+                const target = lines[targetLine - 1];
+                if (target) {
+                    const text = target.innerText;
+                    const before = text.slice(0, startCol);
+                    const error = text.slice(startCol, endCol);
+                    const after = text.slice(endCol);
+
+                    target.innerHTML = `${before}<span class="column-error">${error}</span>${after}`;
+                }
+            }, 500);
+        });
+
+        function toggleDetails() {
+            const details = document.querySelector('.error-details');
+            const tglBtn = document.querySelector('.show-hide-button');
+            if (details.style.display === 'none') {
+                details.style.display = 'block';
+                tglBtn.innerHTML = 'Hide';
+            } else {
+                details.style.display = 'none';
+                tglBtn.innerHTML = 'Show Detail';
+            }
+        }
+    </script>
+    <style>
+        .code-section code .error-line {
+            background-color: #ffe6e6;
+            border-left: 4px solid red;
+            display: block;
+            padding-left: 10px;
+            width: 230px;
+        }
+        .errorLine {
+            background-color: #ffe6e6;
+            border-left: 4px solid red;
+            display: block;
+            padding-left: 10px;
+            width: 230px;
+        }
     </style>
 </head>
+
 <body>
 
-<div class="error-container">
-    <div class="error-box">
-        <div class="error-title">Critical Error</div>
-        <div class="error-message">The source map for TypeScript could not be loaded. This may be due to a missing file or an incorrect path.</div>
-        <div class="error-details">
-            <strong>Error Details:</strong><br>
-            <code>ENOENT: no such file or directory, open 'd:/Dev/Ankeon/node_modules/typescript/lib/typescript.js.map'</code>
-        </div>
-        <div class="button-container">
-            <button class="retry-button" onclick="window.location.reload();">Try Again</button>
+    <div class="error-container">
+        <div class="error-box">
+            <div class="error-title">Bindable Property Error</div>
+            <div class="error-message">₺₺ ErrorMessage ₺₺</div>
+            <div class="error-message">₺₺ ErrorRowIndex ₺₺</div>
+            <div class="code-section" style="margin-top: 20px;">
+                <strong>Hatalı Kod:</strong>
+                <pre >
+                    <code data-ln-start-from="10" class="language-javascript line-numbers">
+                    // Toplama fonksiyonu
+                    function sum(a, b) {
+                        return a + b;
+                        console.log("Bu satıra ulaşılmaz"); // Hatalı satır
+                    }
+                    </code>
+                </pre>
+            </div>
+            <div class="error-details" style="display: none;">
+                <strong>Error Details:</strong><br>
+                <code>₺₺ ErrorStack ₺₺</code>
+            </div>
+            <div class="button-container">
+                <button class="show-hide-button" onclick="toggleDetails();">Show Detail</button>
+                <button class="retry-button" onclick="window.location.reload();">Try Again</button>
+            </div>
         </div>
     </div>
-</div>
 
 </body>
+
 </html>

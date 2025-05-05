@@ -1,3 +1,4 @@
+import { BindableVariableError } from "./bindableVariableError";
 import { BindableObject, BindableVariable, EHTMLFormatTypes, HTMLTemlateInfo } from "./htmlEngine";
 import * as fs from 'fs';
 
@@ -46,7 +47,7 @@ export class BindableObjectModule {
         return detectedHtmlInfo;
     }
 
-    private bindToTemplate<T>(viewModelObject: T, detectedHtmlInfo: HTMLTemlateInfo) {
+    private bindToTemplate<T>(viewModelObject: T, detectedHtmlInfo: HTMLTemlateInfo, rowIndex: number = 0): HTMLTemlateInfo {
 
         const bindableObject = viewModelObject ? this.getBindable(viewModelObject) : undefined;
         if (bindableObject) {
@@ -67,7 +68,7 @@ export class BindableObjectModule {
                         }
 
                         if (!prop) {
-                            throw SyntaxError(`Variable ${item.PathName} is not found in the model object`);
+                            throw new BindableVariableError(item);
                         }
                         switch (item.FormatType) {
                             case EHTMLFormatTypes.VARIABLE:
@@ -92,7 +93,7 @@ export class BindableObjectModule {
                     else {
                         prop = bindableObject?.GetProperty(itemPathName);
                         if (!prop) {
-                            throw SyntaxError(`Variable ${item.PathName} is not found in the model object`);
+                            throw new BindableVariableError(item);
                         }
                         switch (item.FormatType) {
                             case EHTMLFormatTypes.VARIABLE:
