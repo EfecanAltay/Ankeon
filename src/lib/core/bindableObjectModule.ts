@@ -5,7 +5,7 @@ import * as fs from 'fs';
 export class BindableObjectModule {
 
     public RenderContent<T>(htmlTemlateInfo: HTMLTemlateInfo, modelObj: T) {
-        try {
+        try { 
             const fileId = Math.floor(Math.random() * 99999);
             // fs.rm(`${__dirname}/tmp_*.html`, { force: true, recursive: true });
             //fs.writeFileSync(`${__dirname}/tmp_${fileId}.html`, detectedHTMLInfo.outContent, { encoding: "utf-8" });
@@ -51,10 +51,11 @@ export class BindableObjectModule {
 
         const bindableObject = viewModelObject ? this.getBindable(viewModelObject) : undefined;
         if (bindableObject) {
+            // if (detectedHtmlInfo.outContent && detectedHtmlInfo.outContent.length > 0) {
+            //     detectedHtmlInfo.inContent = detectedHtmlInfo.outContent;
+            // }
             for (const item of detectedHtmlInfo.templateList) {
-                if (detectedHtmlInfo.outContent && detectedHtmlInfo.outContent.length > 0) {
-                    detectedHtmlInfo.inContent = detectedHtmlInfo.outContent;
-                }
+  
                 if (bindableObject instanceof BindableObject) {
                     let itemPathName = item.PathName.trim();
                     let prop: any = undefined;
@@ -72,7 +73,7 @@ export class BindableObjectModule {
                         }
                         switch (item.FormatType) {
                             case EHTMLFormatTypes.VARIABLE:
-                                detectedHtmlInfo.outContent = detectedHtmlInfo.inContent.replace(item.toString(), val ? val : '<b> UNDEFINED </b>');
+                                detectedHtmlInfo.outContent = detectedHtmlInfo.outContent.replace(item.toString(), val ? val : '<b> UNDEFINED </b>');
                                 break;
                             case EHTMLFormatTypes.FOR:
                                 // if (prop.VariableValue) {
@@ -93,11 +94,16 @@ export class BindableObjectModule {
                     else {
                         prop = bindableObject?.GetProperty(itemPathName);
                         if (!prop) {
-                            throw new BindableVariableError(item);
+                            const spContent = detectedHtmlInfo.inContent.split("\r\n");
+                            //const errCodePath = [spContent[item.RowIndex - 1], spContent[item.RowIndex], spContent[item.RowIndex + 1]].join("\r\n");
+                            const errCodePath  = spContent[item.RowIndex];
+                            const errMessage =  new BindableVariableError(item);
+                            errMessage.ErrorCodePath = errCodePath;
+                            throw errMessage;
                         }
                         switch (item.FormatType) {
                             case EHTMLFormatTypes.VARIABLE:
-                                detectedHtmlInfo.outContent = detectedHtmlInfo.inContent.replace(item.toString(), prop.VariableValue?.toString());
+                                detectedHtmlInfo.outContent = detectedHtmlInfo.outContent.replace(item.toString(), prop.VariableValue?.toString());
                                 break;
                             case EHTMLFormatTypes.FOR:
                                 if (prop.VariableValue) {
@@ -109,11 +115,11 @@ export class BindableObjectModule {
 
                                     const forList = this.getHTMLMergedViewModel(item.InnerTempleteInfo!, prop.VariableValue);
                                     this.writeTMPFiles("i", detectedHtmlInfo.outContent);
-                                    detectedHtmlInfo.outContent = detectedHtmlInfo.inContent.replace(item.toString(), forList.outContent.toString());
+                                    detectedHtmlInfo.outContent = detectedHtmlInfo.outContent.replace(item.toString(), forList.outContent.toString());
                                     this.writeTMPFiles("o", detectedHtmlInfo.outContent);
                                 }
                                 else {
-                                    detectedHtmlInfo.outContent = detectedHtmlInfo.inContent.replace(item.InnerTempleteInfo!.outContent.toString(), "");
+                                    detectedHtmlInfo.outContent = detectedHtmlInfo.outContent.replace(item.InnerTempleteInfo!.outContent.toString(), "");
                                 }
                                 break;
                         }
@@ -121,7 +127,7 @@ export class BindableObjectModule {
 
                 }
                 else {
-                    detectedHtmlInfo.outContent = detectedHtmlInfo.inContent.replace(item.toString(), bindableObject.VariableValue?.toString());
+                    detectedHtmlInfo.outContent = detectedHtmlInfo.outContent.replace(item.toString(), bindableObject.VariableValue?.toString());
                 }
             }
         }

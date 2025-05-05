@@ -39,6 +39,7 @@ export class ErrorMessage {
             this.ErrorDate = new Date();
             this.ErrorRowIndex = err.ErrorRowIndex;
             this.ErrorColIndex = err.ErrorStartColIndex;  
+            this.ErrorCodePath = err.ErrorCodePath;
         } 
         else{
             this.ErrorCode = "ERR02";
@@ -47,6 +48,7 @@ export class ErrorMessage {
             this.ErrorDate = new Date();
             this.ErrorRowIndex = 0;
             this.ErrorColIndex = 0;
+            this.ErrorCodePath = "";
         }
     }
 }
