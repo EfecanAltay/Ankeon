@@ -1,36 +1,19 @@
-import { FileOperationModule } from './fileOperationModule';
 import { BindableVariableError } from './bindableVariableError';
-import { PointerContentModule } from './pointerContentModule';
-import { BindableObjectModule } from './bindableObjectModule';
 import { ErrorPage } from '../simple/errorPage';
+import { PageRenderEngine } from './pageRenderEngine';
 
 export class ErrorHandlingModule {
-
-    private _fileOperationModule: FileOperationModule;
-    private _pointerContentModule: PointerContentModule;
-    private _bindableObjectModule: BindableObjectModule;
-
-    // Reading Error Template
 
     /**
      *
      */
     constructor(
-        fileOperationModule: FileOperationModule,
-        pointerContentModule: PointerContentModule,
-        bindableObjectModule: BindableObjectModule
-    ) {
-        this._fileOperationModule = fileOperationModule;
-        this._pointerContentModule = pointerContentModule;
-        this._bindableObjectModule = bindableObjectModule;
+        private _pageRenderEngine: PageRenderEngine = new PageRenderEngine()) {
     }
 
     public RenderErrorTemplate(error: any): string {
         const errorPage = new ErrorPage(error);
-        const contentPath = (errorPage as any).prototype["ContentPath"];
-        const content = this._fileOperationModule.ReadFile(contentPath);
-        const pointeredContent = this._pointerContentModule.PointerContent(content);
-        return this._bindableObjectModule.RenderContent(pointeredContent, errorPage);
+        return this._pageRenderEngine.RenderPage(errorPage);
     }
 }
 

@@ -2,6 +2,7 @@ import { HTMLEngine } from "./htmlEngine";
 import * as http from "http";
 import * as fs from "fs";
 import * as path from "path";
+import { SimplePage } from "../simple/simple";
 
 export class AnkeonServer {
 
@@ -62,7 +63,10 @@ export class AnkeonServer {
         }
 
         // TODO : Routing System
-        const result = this._htmlEngine?.RenderHTML("../simple/simple.html", { FrameworkName: "Ankeon", Desc : "Welcome to the ANKEON Framework!" });
+        const simplePage = new SimplePage();
+        simplePage.FrameworkName = "ANKEON";
+        simplePage.Desc = "Welcome To ANKEON !";
+        const result = this._htmlEngine?.RenderHTML(simplePage);
         res.end(result);
     }
 }

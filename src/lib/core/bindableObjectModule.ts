@@ -13,7 +13,6 @@ export class BindableObjectModule {
             // TODO : Detect the template and replace the variables with the model object
             const o = this.getHTMLMergedViewModel(htmlTemlateInfo, modelObj);
 
-
             // bindingVars.forEach((item, index) => {
             //     const fVar = this.getBindableValue(modelObj, item[1].trim());
             //     if (fVar) {
@@ -39,6 +38,7 @@ export class BindableObjectModule {
                 this.bindToTemplate(item, arrayTemplate);
                 resultContent = resultContent + " " + arrayTemplate.outContent;
             });
+
             detectedHtmlInfo.outContent = resultContent;
         }
         else {

@@ -4,28 +4,16 @@ import { PointerContentModule } from "./pointerContentModule";
 import { BindableObjectModule } from "./bindableObjectModule";
 import * as path from 'path';
 import { ErrorHandlingModule } from "./errorHandlingModule";
+import { PageRenderEngine } from "./pageRenderEngine";
 
 export class HTMLEngine {
 
-    private _fileOperationModule: FileOperationModule = new FileOperationModule();
-    private _pointerContentModule: PointerContentModule = new PointerContentModule();
-    private _bindableObjectModule: BindableObjectModule = new BindableObjectModule();
-    private _errorHandlingModule: ErrorHandlingModule
-        = new ErrorHandlingModule(this._fileOperationModule, this._pointerContentModule, this._bindableObjectModule);
+    private _pageRenderEngine: PageRenderEngine = new PageRenderEngine();
+    private _errorHandlingModule: ErrorHandlingModule = new ErrorHandlingModule(this._pageRenderEngine);
 
-    public RenderHTML<T>(htmlPath: string, modelObj: T): string {
+    public RenderHTML<T>(modelObj: T): string {
         try {
-
-            // Reading HTML file
-            const readingContent = this._fileOperationModule.ReadFile(path.join(__dirname, htmlPath));
-
-            // Detecting the HTML content
-            const pointeredContent = this._pointerContentModule.PointerContent(readingContent);
-
-            // Detecting the HTML content
-            const resultContent = this._bindableObjectModule.RenderContent(pointeredContent, modelObj);
-
-            return resultContent;
+            return this._pageRenderEngine.RenderPage(modelObj);
         }
         catch (error) {
             return this._errorHandlingModule.RenderErrorTemplate(error);

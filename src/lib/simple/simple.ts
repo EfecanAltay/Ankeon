@@ -1,5 +1,11 @@
+import { PageModel } from "../core/decorators";
 
-export class SimpleController {
+@PageModel("./simple.html", __dirname)
+export class SimplePage {
+
+  public FrameworkName:string = "";
+  public Desc:string = "";
+
   constructor() {
     console.log('SimpleController initialized');
   }

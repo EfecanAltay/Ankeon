@@ -32,7 +32,11 @@ export class ErrorPage {
         }
     }
 
-    public GetErrorCode() : string {
-        return this.ErrorCode;
+    public Load() : void {
+        alert("load called");
+    }
+
+    public GetErrorMessage() : string {
+        return this.ErrorMessage;
     }
 }
