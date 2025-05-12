@@ -3,18 +3,15 @@ import { FileOperationModule } from "./fileOperationModule";
 import { PointerContentModule } from "./pointerContentModule";
 import { BindableObjectModule } from "./bindableObjectModule";
 import * as path from 'path';
-import { ErrorHandlingModule, ErrorMessage } from "./errorHandlingModule";
-import { BindableVariableError } from "./bindableVariableError";
+import { ErrorHandlingModule } from "./errorHandlingModule";
 
 export class HTMLEngine {
 
     private _fileOperationModule: FileOperationModule = new FileOperationModule();
     private _pointerContentModule: PointerContentModule = new PointerContentModule();
     private _bindableObjectModule: BindableObjectModule = new BindableObjectModule();
-    private _errorHandlingModule: ErrorHandlingModule = new ErrorHandlingModule(this._fileOperationModule);
-
-    // Reading HTML file
-    private errorContent = this._fileOperationModule.ReadFile(path.join(__dirname, "../simple/error.html"));
+    private _errorHandlingModule: ErrorHandlingModule
+        = new ErrorHandlingModule(this._fileOperationModule, this._pointerContentModule, this._bindableObjectModule);
 
     public RenderHTML<T>(htmlPath: string, modelObj: T): string {
         try {
@@ -31,15 +28,8 @@ export class HTMLEngine {
             return resultContent;
         }
         catch (error) {
-            return this.RenderErrorTemplate(error); 
+            return this._errorHandlingModule.RenderErrorTemplate(error);
         }
-    }
-
-    public RenderErrorTemplate(error: any): string {  
-        // Detecting the HTML content
-        const pointeredContent = this._pointerContentModule.PointerContent(this.errorContent);
-        const errMessage = new ErrorMessage(error);
-        return this._bindableObjectModule.RenderContent(pointeredContent, errMessage);
     }
 
     public TemplateRefMap: Map<string, HTMLTemlateInfo> = new Map<string, HTMLTemlateInfo>();
