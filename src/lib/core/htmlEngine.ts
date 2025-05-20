@@ -5,6 +5,7 @@ import { BindableObjectModule } from "./bindableObjectModule";
 import * as path from 'path';
 import { ErrorHandlingModule } from "./errorHandlingModule";
 import { PageRenderEngine } from "./pageRenderEngine";
+import { isFunction } from "util";
 
 export class HTMLEngine {
 
@@ -95,6 +96,11 @@ export class TemplateRef {
                 this.StartedColIndex = details[4];
                 this.EndedColIndex = details[5];
                 break;
+             case EHTMLFormatTypes.FUNCTIONCALL:
+                this.RowIndex = details[1];
+                this.StartedColIndex = details[2];
+                this.EndedColIndex = details[3];
+                break;
         }
     }
 
@@ -117,10 +123,12 @@ export class TemplateRef {
 }
 
 export class HTMLTemlateInfo {
+    public FilePath: string = "";
     templateList: TemplateRef[] = [];
     outContent: string = "";
     inContent: string = "";
     isArray: boolean = false;
+    isFunction: boolean = false;
     ArrayItemName: string | undefined = undefined;
 }
 
@@ -148,5 +156,6 @@ export enum EHTMLFormatTypes {
     BREAK,
     CONTINUE,
     WHILE,
-    DO
+    DO,
+    FUNCTIONCALL,
 }

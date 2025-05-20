@@ -5,6 +5,10 @@
 
 
 
+
+
+
+
 <head>
 
     <meta charset="UTF-8">
@@ -415,12 +419,13 @@
 
                 <strong>Error Details:</strong><br>
 
-                <code>Error: Variable Desc2 is not found in the model object
-    at BindableObjectModule.bindToTemplate (D:\Dev\Ankeon\src\lib\core\bindableObjectModule.ts:100:49)
-    at BindableObjectModule.getHTMLMergedViewModel (D:\Dev\Ankeon\src\lib\core\bindableObjectModule.ts:45:18)
+                <code>Error: [bindable module] Desc2 is not found in the model object
+            D:\Dev\Ankeon\src\lib\simple\simple.html:73:36
+    at BindableObjectModule.bindToTemplate (D:\Dev\Ankeon\src\lib\core\bindableObjectModule.ts:115:49)
+    at BindableObjectModule.getHTMLMergedViewModel (D:\Dev\Ankeon\src\lib\core\bindableObjectModule.ts:44:18)
     at BindableObjectModule.RenderContent (D:\Dev\Ankeon\src\lib\core\bindableObjectModule.ts:14:28)
-    at PageRenderEngine.RenderPage (D:\Dev\Ankeon\src\lib\core\pageRenderEngine.ts:21:43)
-    at HTMLEngine.RenderHTML (D:\Dev\Ankeon\src\lib\core\htmlEngine.ts:16:43)
+    at PageRenderEngine.RenderPage (D:\Dev\Ankeon\src\lib\core\pageRenderEngine.ts:18:43)
+    at HTMLEngine.RenderHTML (D:\Dev\Ankeon\src\lib\core\htmlEngine.ts:17:43)
     at AnkeonServer.onRequest (D:\Dev\Ankeon\src\lib\core\ankeonServer.ts:69:42)
     at Server.<anonymous> (D:\Dev\Ankeon\src\lib\core\ankeonServer.ts:18:61)
     at Server.emit (node:events:518:28)
@@ -431,9 +436,9 @@
 
             <div class="button-container">
 
-                <button class="show-hide-button" onclick="toggleDetails();">Show Detail</button>
+                <button class="show-hide-button" $onclick="toggleDetails();">Show Detail</button>
 
-                <button class="retry-button" onclick="window.location.reload();">Try Again</button>
+                <button class="retry-button" $onclick="window.location.reload();">Try Again</button>
 
             </div>
 

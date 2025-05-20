@@ -23,7 +23,6 @@ export class BindableObjectModule {
             return o.outContent;
         }
         catch (err) {
-            console.error(err);
             throw err;
         }
     }
@@ -69,13 +68,29 @@ export class BindableObjectModule {
                         }
 
                         if (!prop) {
-                            throw new BindableVariableError(item);
+                            const error = new BindableVariableError(item, detectedHtmlInfo.FilePath);
+                            console.error(error.ErrorDesc);
+                            throw error;
                         }
                         switch (item.FormatType) {
                             case EHTMLFormatTypes.VARIABLE:
                                 detectedHtmlInfo.outContent = detectedHtmlInfo.outContent.replace(item.toString(), val ? val : '<b> UNDEFINED </b>');
                                 break;
                             case EHTMLFormatTypes.FOR:
+                                // if (prop.VariableValue) {
+                                //     if (!Array.isArray(prop.VariableValue)) {
+                                //         prop.VariableValue = this.propertyToArray(prop.VariableValue);
+                                //     }
+                                //     const forList = this.getHTMLMergedViewModel(item.InnerTempleteInfo!, prop.VariableValue);
+                                //     this.writeTMPFiles("i", detectedHtmlInfo.outContent);
+                                //     detectedHtmlInfo.outContent = detectedHtmlInfo.inContent.replace(item.toString(), forList.outContent.toString());
+                                //     this.writeTMPFiles("o", detectedHtmlInfo.outContent);
+                                // }
+                                // else {
+                                //     detectedHtmlInfo.outContent = detectedHtmlInfo.inContent.replace(item.InnerTempleteInfo!.outContent.toString(), "");
+                                // }
+                                break;
+                            case EHTMLFormatTypes.FUNCTIONCALL:
                                 // if (prop.VariableValue) {
                                 //     if (!Array.isArray(prop.VariableValue)) {
                                 //         prop.VariableValue = this.propertyToArray(prop.VariableValue);
@@ -97,8 +112,9 @@ export class BindableObjectModule {
                             const spContent = detectedHtmlInfo.inContent.split("\r\n");
                             //const errCodePath = [spContent[item.RowIndex - 1], spContent[item.RowIndex], spContent[item.RowIndex + 1]].join("\r\n");
                             const errCodePath  = spContent[item.RowIndex];
-                            const errMessage =  new BindableVariableError(item);
+                            const errMessage =  new BindableVariableError(item, detectedHtmlInfo.FilePath);
                             errMessage.ErrorCodePath = errCodePath;
+                            console.error(errMessage.message);
                             throw errMessage;
                         }
                         switch (item.FormatType) {

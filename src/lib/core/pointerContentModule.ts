@@ -1,12 +1,23 @@
 import { DetectionRegexCodes } from "./detectionRegexCodes";
+import { FileOperationModule } from "./fileOperationModule";
 import { EHTMLFormatTypes, HTMLTemlateInfo, TemplateRef } from "./htmlEngine";
+import * as  Cheerio from 'cheerio';
+import * as parse5 from 'parse5';
 
 export class PointerContentModule {
 
-    public PointerContent(html: string): HTMLTemlateInfo {
+    private _fileOperationModule: FileOperationModule = new FileOperationModule();
+    public PointerContent(pageModel: any): HTMLTemlateInfo {
 
-        const htmlTemplateInfo = this.detectForLoop(html);
-        return this.detectVariables(html, htmlTemplateInfo);
+        const contentPath = (pageModel as any).prototype["ContentPath"] as string;
+        const content = this._fileOperationModule.ReadFile(contentPath);
+
+        let htmlTemplateInfo = new HTMLTemlateInfo();
+        htmlTemplateInfo.FilePath = contentPath;
+        htmlTemplateInfo = this.detectForLoop(content, htmlTemplateInfo);
+        htmlTemplateInfo = this.detectFuncCall(content, htmlTemplateInfo);
+
+        return this.detectVariables(content, htmlTemplateInfo);
 
         //var dForLoops = this.detectForLoop(html);
         //var dVariables = this.detectVariables(dForLoops.outContent);
@@ -16,25 +27,6 @@ export class PointerContentModule {
         // templateInfo.templateList = dForLoops.templateList.concat(dVariables.templateList);
     }
 
-    private detectVariables(html: string, overTemplateInfo?: HTMLTemlateInfo): HTMLTemlateInfo {
-        if (overTemplateInfo == undefined)
-            overTemplateInfo = new HTMLTemlateInfo();
-        const htmlRows = html.split("\r\n");
-        const resultHTML: string[] = [];
-        htmlRows.forEach((element, rowIndex) => {
-            let outHtmlRow = "";
-            const d = this.detectVariableInRow(element, rowIndex);
-            resultHTML.push(outHtmlRow);
-            if (d.refList.length > 0) {
-                console.log("Detected Variables: ", d);
-            }
-            overTemplateInfo.templateList.push(...d.refList);
-            resultHTML.push(d.o);
-        });
-        overTemplateInfo.outContent = resultHTML.join("\r\n");
-        overTemplateInfo.inContent = html;
-        return overTemplateInfo;
-    }
 
     private detectRegex(htmlRow: string, regexCode: RegExp): RegExpExecArray[] {
         const bindingDetect = htmlRow.matchAll(regexCode);
@@ -83,12 +75,48 @@ export class PointerContentModule {
         return templateInfo;
     }
 
-    private detectForLoop(html: string): HTMLTemlateInfo | undefined {
-        const resultOutput: HTMLTemlateInfo = new HTMLTemlateInfo();
+    private detectFuncCall(html: string, resultOutput?: HTMLTemlateInfo): HTMLTemlateInfo {
+        if (resultOutput == undefined)
+            resultOutput = new HTMLTemlateInfo();
+
+        const $ = Cheerio.load(html);
+
+        const document = parse5.parse(html, { sourceCodeLocationInfo: true });
+
+        this.detectCallbackOnDoc(document, resultOutput.FilePath);
+
+        resultOutput.inContent = html;
+        resultOutput.outContent = html;
+        return resultOutput;
+    }
+
+    private detectCallbackOnDoc(node: any, docPath: string) {
+        if (node.attrs && node.sourceCodeLocation?.attrs) {
+            for (const attr of node.attrs) {
+                const attrName = attr.name;
+                if (attrName.startsWith('$')) {
+                    const attrLoc = node.sourceCodeLocation.attrs[attrName];
+                    console.log(
+                        `[pc log] Detected Callback :'${attrName}' at ${docPath}:${attrLoc.startLine}:${attrLoc.startCol}`
+                    );
+                }
+            }
+        }
+
+        if (node.childNodes) {
+            for (const child of node.childNodes) {
+                this.detectCallbackOnDoc(child, docPath);
+            }
+        }
+    }
+
+    private detectForLoop(html: string, resultOutput?: HTMLTemlateInfo): HTMLTemlateInfo {
+        if (resultOutput == undefined)
+            resultOutput = new HTMLTemlateInfo();
         const templateInfo: TemplateRef[] = [];
         const detectedVal = this.detectRegex(html, DetectionRegexCodes.ForLoopFullRegexCode);
+        let htmlOutput: string | undefined = html;
         if (detectedVal.length > 0) {
-            let htmlOutput: string | undefined = html;
             detectedVal.forEach((item) => {
                 const fullFinding = item[0]; //  for (item in list) { ... }
                 const loopListName = item[2]; //  loop variable name
@@ -105,11 +133,32 @@ export class PointerContentModule {
                 htmlOutput = htmlOutput?.replace(fullFinding, n.toString()); // replace the loop with the item name
                 templateInfo.push(n);
             });
-
-            resultOutput.templateList = templateInfo;
-            resultOutput.inContent = htmlOutput;
-            resultOutput.outContent = htmlOutput;
-            return resultOutput;
         }
+        resultOutput.templateList = templateInfo;
+        resultOutput.inContent = htmlOutput;
+        resultOutput.outContent = htmlOutput;
+        return resultOutput;
+    }
+
+    private detectVariables(html: string, resultOutput?: HTMLTemlateInfo): HTMLTemlateInfo {
+        if (resultOutput == undefined)
+            resultOutput = new HTMLTemlateInfo();
+        const htmlRows = html.split("\r\n");
+        const resultHTML: string[] = [];
+        htmlRows.forEach((element, rowIndex) => {
+            let outHtmlRow = "";
+            const d = this.detectVariableInRow(element, rowIndex);
+            resultHTML.push(outHtmlRow);
+            if (d.refList.length > 0) {
+                d.refList.forEach((item) => {
+                    console.log(`[pc log] Detected Variables: '${item.PathName}' ${resultOutput.FilePath}:${item.RowIndex + 1}:${item.StartedColIndex + 1}`);
+                });
+            }
+            resultOutput.templateList.push(...d.refList);
+            resultHTML.push(d.o);
+        });
+        resultOutput.outContent = resultHTML.join("\r\n");
+        resultOutput.inContent = html;
+        return resultOutput;
     }
 }

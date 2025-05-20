@@ -4,6 +4,7 @@ import { PageModel } from "../core/decorators";
 @PageModel("./errorPage.html", __dirname)
 export class ErrorPage {
     public ErrorCode: string;
+    public ErrorTitle: string;
     public ErrorMessage: string;
     public ErrorStack?: string;
     public ErrorDate: Date;
@@ -14,7 +15,8 @@ export class ErrorPage {
     constructor(err : BindableVariableError) {
         if(err instanceof BindableVariableError) {
             this.ErrorCode = "ERR01";
-            this.ErrorMessage = err.message;
+            this.ErrorTitle = err.ErrorTitle;
+            this.ErrorMessage = err.ErrorDesc;
             this.ErrorStack = err.stack;
             this.ErrorDate = new Date();
             this.ErrorRowIndex = err.ErrorRowIndex;
@@ -23,6 +25,7 @@ export class ErrorPage {
         } 
         else{
             this.ErrorCode = "ERR02";
+            this.ErrorTitle = "Unknown Error";
             this.ErrorMessage = "Unknown error occurred";
             this.ErrorStack = "Unknown error occurred";
             this.ErrorDate = new Date();
